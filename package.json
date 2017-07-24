@@ -1,0 +1,35 @@
+{
+  "name": "mysql-pool-booster",
+  "description": "Performance booster for the pool of mysql",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "ifsnow <ifsnow@gmail.com>",
+  "repository": "ifsnow/mysql-pool-booster",
+  "main": "index.js",
+  "files": [
+    "lib/",
+    "Changes.md",
+    "Readme.md",
+    "index.js"
+  ],
+  "engines": {
+    "node": ">= 0.6"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mysql": "^2.13.0",
+    "async": "^2.5.0",
+    "after": "0.8.2",
+    "eslint": "3.19.0",
+    "seedrandom": "2.4.3",
+    "timezone-mock": "0.0.4",
+    "urun": "0.0.8",
+    "utest": "0.0.8"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node test/run.js"
+  },
+  "keywords": ["mysql", "pool", "performance"]
+}
