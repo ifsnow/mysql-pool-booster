@@ -50,6 +50,7 @@ It offers more useful options like Commons DBCP.
 
 | Option  | Default | Description |
 | --- | --- | --- |
+| queueTimeout | 0 (off) | The maximum number of milliseconds that the queued request will wait for a connection when there are no available connections. If set to `0`, wait indefinitely. |
 | testOnBorrow | true | Indicates whether the connection is validated before borrowed from the pool. If the connection fails to validate, it is dropped from the pool. |
 | testOnBorrowInterval | 20000 | The number of milliseconds that indicates how often to validate if the connection is working since it was last used. If set too low, performance may decrease on heavy loaded systems. If set to `0`, It is checked every time. |
 | initialSize | 0 (off) | The initial number of connections that are created when the pool is started. If set to `0`, this feature is disabled. |
