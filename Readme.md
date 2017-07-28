@@ -2,51 +2,55 @@
 
 [![NPM Version][npm-image]][npm-url]
 
-`mysql-pool-booster` easily converts the pool of `mysql` to more faster and improved version. By applying one line, you can use everything. Please try it once if you're already using the pool of mysql.
+This is for those who use the connection pool in Node.js + mysql module environment. By adding just a few lines, you can use the connection pool with better performance and useful options than orginal. Please try it once if you're already using the pool of mysql.
 
-If you don't know `mysql`, you should check out [mysql](https://github.com/mysqljs/mysql) first.
+If you don't know `mysql` module, you should check out [mysql](https://github.com/mysqljs/mysql) first.
 
 ## Table of Contents
 
 - [How to use](#how-to-use)
-- [Improved performance](#improved-performance)
+- [Performance Improvements](#performance-improvements)
 - [Useful options](#useful-options)
-- [Usage restrictions](#usage-restrictions)
+- [Restrictions on use](#restrictions-on-use)
 
 ## How to use
 
-First of all, install a booster module.
+- Install
 
  ```bash
  $ npm install mysql-pool-booster
  ```
 
-Wrap `mysql` with the booster module, now you can use converted `mysql` just as you used it.
+- Convert `mysql`
 
-```js
-var mysql = require('mysql');
+ ```js
+ var mysql = require('mysql');
 
-// converts
-var MysqlPoolBooster = require('mysql-pool-booster');
-mysql = MysqlPoolBooster(mysql);
+ // Converting an existing mysql object
+ var MysqlPoolBooster = require('mysql-pool-booster');
+ mysql = MysqlPoolBooster(mysql);
 
-// uses as you used it.
-mysql.createPool({ ... });
-```
+ // You can use it just as you used it
+ mysql.createPool({ ... });
+ ```
 
-## Improved performance
+- Use the `mysql` just as it used to be
 
-By applying this module, your service could be improved by over 80% without doing anything.
+## Performance Improvements
+
+Applying without additional work, your service can be improved 80% or more efficiently.
+
+This is the result of a [performance measurement code](https://gist.github.com/ifsnow/5cc2a628574c2708eb91231c1abe92cd) that handles 30,000 requests.
 
 |  | Original | Booster Version |
 | --- | --- | --- |
-| Executions per second | 5,877  | 10,650 (181% ↑) |
+| Processing per second | 5,877  | 10,650 (181% ↑) |
 
-[See a benchmark code](https://gist.github.com/ifsnow/5cc2a628574c2708eb91231c1abe92cd)
+You can experience a better effect if your service connects to remote mysql server and handles heavy concurrent requests.
 
 ## Useful options
 
-It offers more useful options like Commons DBCP.
+It gives you the flexibility to run the pool with many useful options similar to Java's DBCP.
 
 | Option  | Default | Description |
 | --- | --- | --- |
@@ -96,17 +100,17 @@ console.log('Idle connections : %d', status.idle);
 console.log('Queued requests : %d', status.queue);
 ```
 
-## Usage restrictions
+## Restrictions on use
 
-It's fully compatible with `mysql`. However, there may be some problem if you are using it incorrectly such as accessing private underscore-prefix properties. That's because `mysql-pool-booster` doesn't offer private properties.
+It passes all tests provided by the `mysql` module and provides 100% compatibility. However, there may be some problem if you are using it incorrectly such as accessing private underscore-prefix properties. For example.
 
 ```js
-// It's a misuse, so you can't access.
+// It's a misuse. you must not access private variables
 if (pool._allConnections.length > 0) {
   ...
 }
 
-// You should use this way.
+// You should use the following method instead
 if (pool.getStatus().all > 0) {
   ...
 }
