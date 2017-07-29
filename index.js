@@ -23,7 +23,7 @@ module.exports = function(mysql) {
    * @public
    */
 
-  exports.createPoolCluster = function createPoolCluster(config) {
+  mysql.createPoolCluster = function createPoolCluster(config) {
     return new PoolCluster(mysql, config);
   };
 
