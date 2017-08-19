@@ -27,5 +27,10 @@ module.exports = function(mysql) {
     return new PoolCluster(mysql, config);
   };
 
+  mysql.CLUSTER_TYPE = {
+    WRITER : 'writer',
+    READER : 'reader'
+  };
+
   return mysql;
 };

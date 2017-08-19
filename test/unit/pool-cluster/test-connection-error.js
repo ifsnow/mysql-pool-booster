@@ -15,8 +15,7 @@ server.listen(common.fakeServerPort, function(err) {
 
   cluster.getConnection('MASTER', function (err) {
     assert.ok(err);
-    assert.equal(err.code, 'ER_HOST_NOT_PRIVILEGED');
-    assert.equal(err.fatal, true);
+    assert.equal(err.code, 'POOL_NOEXIST');
     assert.equal(connCount, 5);
 
     cluster.end(function (err) {

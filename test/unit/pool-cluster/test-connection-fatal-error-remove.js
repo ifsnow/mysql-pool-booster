@@ -15,8 +15,7 @@ server.listen(common.fakeServerPort, function (err) {
 
   pool.getConnection(function (err) {
     assert.ok(err, 'got error');
-    assert.equal(err.code, 'PROTOCOL_SEQUENCE_TIMEOUT');
-    assert.equal(err.fatal, true);
+    assert.equal(err.code, 'POOL_NOEXIST');
 
     cluster.end(function (err) {
       assert.ifError(err);

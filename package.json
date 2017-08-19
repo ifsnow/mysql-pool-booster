@@ -21,9 +21,9 @@
     "mysql": "^2.13.0",
     "async": "^2.5.0",
     "after": "0.8.2",
-    "eslint": "3.19.0",
+    "eslint": "4.4.1",
     "seedrandom": "2.4.3",
-    "timezone-mock": "0.0.4",
+    "timezone-mock": "0.0.5",
     "urun": "0.0.8",
     "utest": "0.0.8"
   },

@@ -19,16 +19,10 @@ server.listen(common.fakeServerPort, function (err) {
 
   pool.query('SELECT 1', function (err) {
     assert.ok(err);
-    assert.equal(err.code, 'PROTOCOL_CONNECTION_LOST');
-    assert.equal(err.fatal, true);
+    assert.equal(err.code, 'POOL_NONEONLINE');
     assert.equal(connCount, 2);
 
-    pool.query('SELECT 1', function (err) {
-      assert.ok(err);
-      assert.equal(err.code, 'POOL_NONEONLINE');
-
-      offline = false;
-    });
+    offline = false;
 
     setTimeout(function () {
       pool.query('SELECT 1', function (err) {

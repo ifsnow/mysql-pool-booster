@@ -11,6 +11,8 @@ If you don't know `mysql` module, you should check out [mysql](https://github.co
 - [How to use](#how-to-use)
 - [Performance Improvements](#performance-improvements)
 - [Useful options](#useful-options)
+- [Advanced PoolCluster](#advanced-poolcluster)
+- [Additional Features](#additional-features)
 - [Restrictions on use](#restrictions-on-use)
 
 ## How to use
@@ -64,6 +66,153 @@ It gives you the flexibility to run the pool with many useful options similar to
 | timeBetweenEvictionRunsMillis | 0 (off) | The number of milliseconds to sleep between runs of examining idle connections. The eviction timer will remove existent idle conntions by `minEvictableIdleTimeMillis` or create new idle connections by `minIdle`. If set to `0`, this feature is disabled. |
 | minEvictableIdleTimeMillis | 1800000 | The minimum amount of time the connection may sit idle in the pool before it is eligible for eviction due to idle time. If set to `0`, no connection will be dropped. |
 | numTestsPerEvictionRun | 3 | The number of connections to examine during each run of the eviction timer (if any). |
+
+## Advanced PoolCluster
+
+`mysql` module has a useful feature called `PoolCluster` to easily handle multiple hosts. If you want to know how to use it, please see this [official document]((https://github.com/mysqljs/mysql#poolcluster) first. `mysql-pool-booster` provides more advanced ways to use it.
+
+### Create with options
+
+You can create it with options(`nodes` > `clusterId`) instead of using `add` function. I think this is more useful if you're using the JSON config.
+
+```js
+// original version using the function
+var cluster = mysql.createPoolCluster({...});
+
+cluster.add('master', {
+  host : '...',
+  ...
+});
+
+cluster.add('slave', {
+  host : '...',
+  ...
+});
+
+// booster version using the options
+var cluster = mysql.createPoolCluster({
+  ....,
+  nodes : [{
+    clusterId : 'master',
+    host : '...',
+    ...
+  }, {
+    clusterId : 'slave',    
+    host : '...',
+    ...
+  }]
+});
+```
+
+### Writer & Reader
+In many cases, `PoolCluster` is used for the purpose of using the master and slave connection pools, so it provides the concept of `Writer` and `Reader` for easier use. You can set it up with options(`nodes` > `clusterType`) or functions(`addWriter`, `addReader`, `add`).
+
+```js
+/**
+ * 4 nodes are created.
+ * # Writer : No ID
+ * # Reader : main, sub, sub2
+ */
+var cluster = mysql.createPoolCluster({
+  ....,
+  nodes : [{
+    clusterType : 'writer', // without clusterId
+    host : '...',
+    ...
+  }, {
+    clusterType : 'reader', // with clusterId
+    clusterId : 'main',
+    host : '...',
+    ...
+  }
+});
+
+cluster.addReader('sub', {
+  host : '...',
+  ...
+});
+
+cluster.add({  
+  clusterType : mysql.CLUSTER_TYPE.READER, // mysql.CLUSTER_TYPE.WRITER
+  clusterId : 'sub2',
+  host : '...',
+  ...
+});
+
+// You can get a connection of the Writer group's nodes right away.
+// the same as cluster.getWriter().getConnection(...)
+cluster.getWriterConnection(function(err, connection) {
+  ...
+});
+
+// You can get a connection from all of the Reader group's nodes (`main`,` sub`, `sub2`)
+cluster.getReaderConnection(function(err, connection) {
+  ...
+});
+
+// You can get a connection from specific Reader group's nodes (`sub`, `sub2`)
+// the same as cluster.getReader('sub*').getConnection(function(err, connection)
+cluster.getReaderConnection('sub*', function(err, connection) {
+  ...
+});
+```
+
+### Sharding
+
+If you want to use the application-level [sharding](https://goo.gl/9DdfAK) simply, all you need to do is set it up with options(`shardings`) or `addSharding` function. In complex cases, I think you'd better use another professional sharding platform.
+
+```js
+// Create with options
+var cluster = mysql.createPoolCluster({
+  ....,
+  nodes : [{
+    clusterId : 'old',
+    host : '...',
+    ...
+  }, {
+    clusterId : 'new',    
+    host : '...',
+    ...
+  }],
+  shardings : {
+    byUserSeq : function(user) {
+      return user.seq > 1000000 ? 'new' : 'old';
+    }
+  }
+});
+
+// Add with functions
+cluster.addSharding('byTwoParams', function(a, b) {
+  return a + b > 10 ? 'new' : 'old';
+});
+```
+
+You can use the `getSharding` or `getShardingConnection`(`getShardingReaderConnection`, `getShardingWriterConnection`) function with argument to get a connection.
+
+```js
+var user = {
+  seq : 50000
+};
+
+// The connection is based on the user parameter. (In this case, 'old')
+// the same as cluster.getSharding('byUserSeq', user).getConnection(...)
+cluster.getShardingConnection('byUserNumber', user, function(err, connection) {
+  ...
+});
+
+// The argument must be an array type if there is more than one.
+cluster.getShardingConnection('byTwoParams', [valueA, valueB], function(err, connection) {
+  ...
+});
+
+// You have to use getReaderConnection() or getWriterConnection() if the nodes are defined as Writer&Reader.
+// the same as cluster.getShardingReaderConnection('byUserNumber', user, ...)
+cluster.getSharding('byUserNumber', user).getReaderConnection(function(err, connection) {
+  ...
+});
+```
+
+## Additional Features
 
 ### prepared
 
