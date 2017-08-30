@@ -69,7 +69,7 @@ It gives you the flexibility to run the pool with many useful options similar to
 
 ## Advanced PoolCluster
 
-`mysql` module has a useful feature called `PoolCluster` to easily handle multiple hosts. If you want to know how to use it, please see this [official document]((https://github.com/mysqljs/mysql#poolcluster) first. `mysql-pool-booster` provides more advanced ways to use it.
+`mysql` module has a useful feature called `PoolCluster` to easily handle multiple hosts. If you want to know how to use it, please see this [official document](https://github.com/mysqljs/mysql/blob/master/Readme.md#poolcluster) first. `mysql-pool-booster` provides more advanced ways to use it.
 
 ### Create with options
 

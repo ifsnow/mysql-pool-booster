@@ -1,7 +1,7 @@
 {
   "name": "mysql-pool-booster",
   "description": "Performance booster for the pool of mysql",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "author": "ifsnow <ifsnow@gmail.com>",
   "repository": "ifsnow/mysql-pool-booster",
